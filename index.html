@@ -355,29 +355,36 @@
               showMessage("⚠️ Carrinho vazio!", "error");
               return;
             }
-
+        
             try {
               setProcessando(true);
-              
-              // Registra cada item do carrinho como venda
-              for (const [produtoId, quantidade] of Object.entries(carrinho)) {
-                const produto = produtos.find(p => p.id == produtoId);
-                if (!produto) continue;
 
-                await apiCall('addVenda', {
+              const promessasVenda = Object.entries(carrinho).map(([produtoId, quantidade]) => {
+                const produto = produtos.find(p => p.id == produtoId);
+                if (!produto) return null;
+        
+                return apiCall('enqueueVenda', {
                   produto: produto.nome,
                   descricao: produto.categoria,
                   quantidade: quantidade,
                   data: new Date().toISOString().split('T')[0]
                 });
-              }
-
-              showMessage(`✅ Venda finalizada! Total: R$ ${calcularTotal().toFixed(2)}`, "success");
-              limparCarrinho();
-              loadProdutos(); // Recarrega para atualizar estoque
+              }).filter(p => p !== null); 
+        
+              const resultados = await Promise.all(promessasVenda);
               
-            } catch (err) {
-              showMessage("❌ Erro ao finalizar venda: " + err.message, "error");
+              const sucessoGeral = resultados.every(res => res && res.success);
+              
+              if (sucessoGeral) {
+                showMessage("✅ Vendas enviadas para a fila com sucesso!", "success");
+                setCarrinho({});
+              } else {
+                showMessage("⚠️ Algumas vendas falharam ao entrar na fila. Tente novamente.", "warning");
+              }
+        
+            } catch (error) {
+              console.error("Erro ao finalizar venda:", error);
+              showMessage("❌ Erro grave ao comunicar com o servidor.", "error");
             } finally {
               setProcessando(false);
             }
