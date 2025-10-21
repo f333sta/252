@@ -382,7 +382,7 @@
               const sucessoGeral = resultados.every(res => res && res.success);
               
               if (sucessoGeral) {
-                showMessage("✅ Vendas enviadas para a fila com sucesso!", "success");
+                showMessage("✅ Venda registrada com sucesso!", "success");
                 setCarrinho({});
               } else {
                 const totalFalhas = resultados.filter(res => !res.success).length;
