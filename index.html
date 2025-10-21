@@ -437,15 +437,29 @@
                           <button
                             key={produto.id}
                             onClick={() => adicionarAoCarrinho(produto)}
-                            disabled={produto.estoque <= 0}
-                            className={`p-6 rounded-xl transition-all ${
-                              produto.estoque > 0
-                                ? 'bg-white/20 hover:bg-white/30 active:scale-95'
-                                : 'bg-gray-500/20 cursor-not-allowed'
-                            }`}
+                            // BLOQUEIO ESTOQUE ZERO DESABILITADO
+                            //disabled={produto.estoque <= 0}
+                            //className={`p-6 rounded-xl transition-all ${
+                            //  produto.estoque > 0
+                            //    ? 'bg-white/20 hover:bg-white/30 active:scale-95'
+                            //    : 'bg-gray-500/20 cursor-not-allowed'
+                            //}`}
                           >
                             <div className="text-white text-center">
-                              <div className="text-3xl mb-2">{produto.categoria === 'Cerveja' ? '🍺' : '🥤'}</div>
+                              <div className="text-3xl mb-2">
+                                {(() => {
+                                    switch (produto.categoria) {
+                                        case 'Cerveja':
+                                            return '🍺';
+                                        case 'Refrigerante':
+                                            return '🥤';
+                                        case 'Doses':
+                                            return '🍷';
+                                        default:
+                                            return '❓'; // Ícone padrão para categorias não mapeadas
+                                    }
+                                })()}
+                              </div>
                               <div className="font-bold mb-1">{produto.nome}</div>
                               <div className="text-green-300 text-lg font-semibold">
                                 R$ {produto.precoVenda.toFixed(2)}
