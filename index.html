@@ -358,7 +358,7 @@
         
             try {
               setProcessando(true);
-
+        
               const promessasVenda = Object.entries(carrinho).map(([produtoId, quantidade]) => {
                 const produto = produtos.find(p => p.id == produtoId);
                 if (!produto) return null;
@@ -368,8 +368,14 @@
                   descricao: produto.categoria,
                   quantidade: quantidade,
                   data: new Date().toISOString().split('T')[0]
+                })
+                .then(response => response) 
+                .catch(error => {
+                  console.error("Erro de rede/timeout no item:", produto.nome, error);
+                  return { success: false, message: "Erro de conexão para o item." };
                 });
-              }).filter(p => p !== null); 
+        
+              }).filter(p => p !== null);
         
               const resultados = await Promise.all(promessasVenda);
               
@@ -379,17 +385,18 @@
                 showMessage("✅ Vendas enviadas para a fila com sucesso!", "success");
                 setCarrinho({});
               } else {
-                showMessage("⚠️ Algumas vendas falharam ao entrar na fila. Tente novamente.", "warning");
+                const totalFalhas = resultados.filter(res => !res.success).length;
+                showMessage(`⚠️ ${totalFalhas} item(s) falhou(ram) ao entrar na fila. Tente novamente.`, "warning");
               }
         
             } catch (error) {
               console.error("Erro ao finalizar venda:", error);
-              showMessage("❌ Erro grave ao comunicar com o servidor.", "error");
+              showMessage("❌ Erro interno ao processar carrinho.", "error");
             } finally {
               setProcessando(false);
             }
           };
-
+          
           const itensCarrinho = Object.entries(carrinho).map(([produtoId, quantidade]) => {
             const produto = produtos.find(p => p.id == produtoId);
             return produto ? { ...produto, quantidade } : null;
