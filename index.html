@@ -444,19 +444,17 @@
             }
           };
 
-          useEffect(() => {
-            const totalAtual = calcularTotal();
-
-            if (selectedPaymentMethod === 'Dinheiro' && totalAtual > 0) {
-              const valorPagoFloat = parseFloat(String(valorPago).replace(',', '.') || 0);
-
-              if (valorPago === '' || valorPagoFloat < totalAtual) {
-                setValorPago(sugerirTroco(totalAtual));
-              }
-            } else if (selectedPaymentMethod !== 'Dinheiro' && valorPago !== '') {
-              setValorPago('');
-            }
-          }, [carrinho, selectedPaymentMethod]);
+          const getSugestoesPagamento = (total) => {
+            if (total <= 0) return [];
+            
+            const NOTAS_REAIS = [2, 5, 10, 20, 50, 100, 200];
+            
+            const sugestoes = NOTAS_REAIS
+              .filter(nota => nota >= total) 
+              .slice(0, 2); 
+            
+            return sugestoes;
+          };
 
           const itensCarrinho = Object.entries(carrinho).map(([produtoId, quantidade]) => {
             const produto = produtos.find(p => p.id == produtoId);
@@ -622,29 +620,50 @@
                               </div>
                           </div>
                         
-                            {selectedPaymentMethod === 'Dinheiro' && (
-                              <div className="space-y-4 mb-6">
-                                  {/* Campo Valor Recebido do Cliente (Valor Pago) */}
-                                  <div className="border-t border-white/20 pt-4">
-                                      <label className="text-sm font-semibold text-purple-200 block mb-2">Valor Recebido do Cliente:</label>
-                                      <input
-                                          type="text"
-                                          placeholder={`Sugestão: R$ ${sugerirTroco(calcularTotal())}`}
-                                          value={valorPago}
-                                          onChange={(e) => setValorPago(e.target.value.replace('.', ',') )}
-                                          onBlur={() => setValorPago(String(valorPago).replace('.', ','))}
-                                          className="w-full bg-white/20 text-white rounded-lg p-3 border border-white/30 placeholder-purple-300"
-                                      />
-                                  </div>
-                          
-                                  {/* Exibição do Troco Calculado */}
-                                  {calcularTroco > 0 && (
-                                      <div className="flex justify-between items-center text-2xl font-bold text-purple-400">
-                                          <span>Troco:</span>
-                                          <span>R$ {calcularTroco.toFixed(2).replace('.', ',')}</span>
-                                      </div>
-                                  )}
-                              </div>
+                          {selectedPaymentMethod === 'Dinheiro' && (
+                            <div className="space-y-4 mb-6">
+                                <div className="border-t border-white/20 pt-4">
+                                    <label className="text-sm font-semibold text-purple-200 block mb-2">Sugestões de Pagamento:</label>
+                                    
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {getSugestoesPagamento(calcularTotal()).map((valor, index) => (
+                                            <div
+                                              key={index}
+                                              className="flex-1 min-w-[120px] bg-purple-800 text-white p-3 rounded-lg font-bold shadow-md text-left cursor-default"
+                                            >
+                                              <div className="text-sm opacity-80">Paga com:</div>
+                                              <div className="text-xl">R$ {valor.toFixed(2).replace('.', ',')}</div>
+                                              <div className="text-xs opacity-70">Troco: R$ {(valor - calcularTotal()).toFixed(2).replace('.', ',')}</div>
+                                            </div>
+                                        ))}
+  
+                                        <div className="flex-1 min-w-[120px] bg-white/10 rounded-lg p-3 border border-white/30">
+                                            <label className="text-sm font-semibold text-purple-200 block mb-1">Outro Valor (pago):</label>
+                                            <input
+                                                type="text"
+                                                placeholder="R$ 0,00"
+                                                value={valorPago}
+                                                onChange={(e) => setValorPago(e.target.value.replace('.', ',') )}
+                                                onBlur={() => setValorPago(String(valorPago).replace('.', ','))}
+                                                className="w-full bg-transparent text-white font-bold p-1 border-b border-white/30 focus:border-purple-400 outline-none"
+                                            />
+                                            
+                                            {calcularTroco > 0 && (
+                                                <div className="text-xs mt-1 text-purple-300">
+                                                    Troco: R$ {calcularTroco.toFixed(2).replace('.', ',')}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    {calcularTroco > 0 && (
+                                        <div className="flex justify-between items-center text-3xl font-bold text-purple-400 bg-white/10 p-3 rounded-lg mt-4">
+                                            <span>Troco Final:</span>
+                                            <span>R$ {calcularTroco.toFixed(2).replace('.', ',')}</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                           )}
 
                         <div className="space-y-2">
