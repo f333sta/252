@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema Costelão 252</title>
+  <title>⚔️Sistema Eventos 252⚔️</title>
 
   <script>
     window.onerror = function (msg, url, line, col, error) {
@@ -199,7 +199,7 @@
             <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 w-full max-w-md">
                 <div className="text-center mb-8">
-                  <h1 className="text-4xl font-bold text-white mb-2">⚔️Costelão 252⚔️</h1>
+                  <h1 className="text-4xl font-bold text-white mb-2">⚔️Eventos 252⚔️</h1>
                   <p className="text-purple-200">Selecione seu perfil de acesso</p>
                 </div>
         
@@ -761,25 +761,45 @@
 
           // Estatísticas do Dashboard
           const stats = useMemo(() => {
-            const totalVendido = vendas.reduce((sum, v) => sum + (v.total || 0), 0);
+            const vendasArray = vendas || []; 
             
-            // Vendas por produto
+            // Função auxiliar para garantir que o valor lido é um número (0 se for nulo, undefined, string vazia ou NaN)
+            const parseNumber = (value) => {
+                const num = Number(value);
+                // Se a conversão falhar (NaN), retorna 0
+                return isNaN(num) ? 0 : num;
+            };
+        
+            let totalVendido = 0;
+            let totalLucro = 0;
             const vendasPorProduto = {};
-            vendas.forEach(v => {
-              if (!vendasPorProduto[v.produto]) {
-                vendasPorProduto[v.produto] = { quantidade: 0, valor: 0 };
-              }
-              vendasPorProduto[v.produto].quantidade += v.quantidade || 0;
-              vendasPorProduto[v.produto].valor += v.total || 0;
+            
+            vendasArray.forEach(v => {
+                // Usa a função de sanitização em todas as propriedades numéricas da venda
+                const total = parseNumber(v.total);
+                const quantidade = parseNumber(v.quantidade);
+                const lucroDaLinha = parseNumber(v.lucro); 
+                
+                totalVendido += total;
+                totalLucro += lucroDaLinha;
+        
+                if (!vendasPorProduto[v.produto]) {
+                    vendasPorProduto[v.produto] = { quantidade: 0, valor: 0, lucro: 0 };
+                }
+                
+                vendasPorProduto[v.produto].quantidade += quantidade;
+                vendasPorProduto[v.produto].valor += total;
+                vendasPorProduto[v.produto].lucro += lucroDaLinha; 
             });
-
+            
             const produtosOrdenados = Object.entries(vendasPorProduto)
               .map(([nome, dados]) => ({ nome, ...dados }))
               .sort((a, b) => b.quantidade - a.quantidade);
-
-            return {
-              totalVendido,
-              vendasPorProduto: produtosOrdenados
+              
+            return { 
+                totalVendido, 
+                totalLucro, 
+                vendasPorProduto: produtosOrdenados 
             };
           }, [vendas]);
 
@@ -943,7 +963,7 @@
                             <icons.DollarSign />
                           </div>
                           <p className="text-green-100 text-sm mb-1">Total Vendido ({selectedEvento || 'Geral'})</p>
-                          <p className="text-5xl font-bold">R$ {stats.totalVendido.toFixed(2)}</p>
+                          <p className="text-5xl font-bold">R$ {(stats?.totalVendido ?? 0).toFixed(2)}</p>
                         </div>
                         
                         {/* Card de Lucro Total */}
@@ -952,7 +972,7 @@
                                 <icons.BarChart3 />
                             </div>
                             <p className="text-yellow-100 text-sm mb-1">Lucro Total ({selectedEvento || 'Geral'})</p>
-                            <p className="text-5xl font-bold">R$ {stats.totalLucro.toFixed(2)}</p>
+                            <p className="text-5xl font-bold">R$ {(stats?.totalLucro ?? 0).toFixed(2)}</p>
                         </div>
                     </div>
         
