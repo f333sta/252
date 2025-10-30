@@ -1177,7 +1177,7 @@
                               produtos.map((prod) => (
                                 <tr key={prod.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                                   <td className="px-4 py-2 font-mono">{prod.codigo}</td>
-                                  <td className="px-4 py-2 font-semibold">{prod.nome}</td>
+                                  <td className="px-4 py-2 font-mono">{prod.nome}</td>
                                   <td className="px-4 py-2">{prod.categoria}</td>
                                   <td className="px-4 py-2 text-center">{prod.estoque || 0}</td>
                                   <td className="px-4 py-2 text-center">R$ {parseFloat(prod.precoVenda || 0).toFixed(2)}</td>
@@ -1343,7 +1343,7 @@
                                       ) : (
                                           eventos.map(e => (
                                               <tr key={e.ID} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                                  <td className="px-4 py-2 font-semibold">{e.Evento}</td>
+                                                  <td className="px-4 py-2 font-mono">{e.Evento}</td>
                                                   <td className="px-4 py-2 text-center">{e.DataInicial}</td>
                                                   <td className="px-4 py-2 text-center">{e.DataFinal}</td>
                                               </tr>
