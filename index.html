@@ -1029,9 +1029,8 @@
                           <table className="min-w-full table-auto text-white">
                               <thead>
                                   <tr className="bg-white/10">
-                                      <th className="px-4 py-3 text-left">ID</th>
                                       <th className="px-4 py-3 text-left">Produto</th>
-                                      <th className="px-4 py-3 text-center">Qtde</th>
+                                      <th className="px-4 py-3 text-center">Quant.</th>
                                       <th className="px-4 py-3 text-center">Venda (Uni)</th>
                                       <th className="px-4 py-3 text-center">Total</th>
                                       <th className="px-4 py-3 text-center">Data</th>
@@ -1046,7 +1045,6 @@
                                   ) : (
                                       vendas.map(v => (
                                           <tr key={v.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                              <td className="px-4 py-2">{v.id}</td>
                                               <td className="px-4 py-2 font-semibold">{v.produto}</td>
                                               <td className="px-4 py-2 text-center">{v.quantidade}</td>
                                               <td className="px-4 py-2 text-center text-green-300">R$ {Number(v.precoVenda || 0).toFixed(2)}</td>
@@ -1069,7 +1067,6 @@
                           <table className="min-w-full table-auto text-white">
                               <thead>
                                   <tr className="bg-white/10">
-                                      <th className="px-4 py-3 text-left">ID</th>
                                       <th className="px-4 py-3 text-left">Tipo</th>
                                       <th className="px-4 py-3 text-left">Descrição</th>
                                       <th className="px-4 py-3 text-center">Valor</th>
@@ -1085,7 +1082,6 @@
                                   ) : (
                                       transacoes.map(t => (
                                           <tr key={t.ID} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                              <td className="px-4 py-2">{t.ID}</td>
                                               <td className="px-4 py-2 font-semibold capitalize">{t.Tipo}</td>
                                               <td className="px-4 py-2">{t.Descricao}</td>
                                               <td className={`px-4 py-2 text-center font-bold ${Number(t.Valor) >= 0 ? 'text-green-300' : 'text-red-300'}`}>
@@ -1232,7 +1228,6 @@
                                   onChange={(e) => setNovaCompra({ ...novaCompra, valorUnitario: e.target.value })}
                                   className="w-full bg-white/20 text-white rounded-lg p-3 border border-white/30 placeholder-purple-300"
                               />
-                               <label className="text-sm font-semibold text-purple-200 block mt-2">Data da Compra:</label>
                               <input
                                   type="date"
                                   value={novaCompra.data}
@@ -1241,9 +1236,9 @@
                               />
                               <button
                                   onClick={registrarCompra}
-                                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-3 font-semibold transition-colors mt-4"
+                                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-3 font-semibold transition-colors mt-4 **flex items-center justify-center**"
                               >
-                                  <icons.Check className="inline w-5 h-5 mr-2" />
+                                  <icons.Check className="w-5 h-5 mr-2" />
                                   Registrar Compra
                               </button>
                           </div>
@@ -1256,10 +1251,9 @@
                               <table className="min-w-full table-auto text-white">
                                   <thead>
                                       <tr className="bg-white/10">
-                                          <th className="px-4 py-3 text-left">ID</th>
                                           <th className="px-4 py-3 text-left">Produto</th>
                                           <th className="px-4 py-3 text-left">Descrição</th>
-                                          <th className="px-4 py-3 text-center">Qtde</th>
+                                          <th className="px-4 py-3 text-center">Quant.</th>
                                           <th className="px-4 py-3 text-center">Custo (Uni)</th>
                                           <th className="px-4 py-3 text-center">Total</th>
                                           <th className="px-4 py-3 text-center">Data</th>
@@ -1274,7 +1268,6 @@
                                       ) : (
                                           compras.map(c => (
                                               <tr key={c.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                                  <td className="px-4 py-2">{c.id}</td>
                                                   <td className="px-4 py-2 font-semibold">{c.nome}</td>
                                                   <td className="px-4 py-2">{c.descricao}</td>
                                                   <td className="px-4 py-2 text-center">{c.quantidade}</td>
@@ -1321,10 +1314,10 @@
                               />
                               
                               <button
-                                  onClick={registrarEvento}
-                                  className="w-full bg-green-500 hover:bg-green-600 text-white rounded-lg p-3 font-semibold transition-colors mt-4"
+                                  onClick={registrarCompra}
+                                  className="w-full bg-blue-500 hover:bg-blue-600 text-white rounded-lg p-3 font-semibold transition-colors mt-4 **flex items-center justify-center**"
                               >
-                                  <icons.Check className="inline w-5 h-5 mr-2" />
+                                  <icons.Check className="w-5 h-5 mr-2" />
                                   Cadastrar Evento
                               </button>
                           </div>
@@ -1337,7 +1330,6 @@
                               <table className="min-w-full table-auto text-white">
                                   <thead>
                                       <tr className="bg-white/10">
-                                          <th className="px-4 py-3 text-left">ID</th>
                                           <th className="px-4 py-3 text-left">Evento</th>
                                           <th className="px-4 py-3 text-center">Data Início</th>
                                           <th className="px-4 py-3 text-center">Data Fim</th>
@@ -1351,7 +1343,6 @@
                                       ) : (
                                           eventos.map(e => (
                                               <tr key={e.ID} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                                  <td className="px-4 py-2">{e.ID}</td>
                                                   <td className="px-4 py-2 font-semibold">{e.Evento}</td>
                                                   <td className="px-4 py-2 text-center">{e.DataInicial}</td>
                                                   <td className="px-4 py-2 text-center">{e.DataFinal}</td>
